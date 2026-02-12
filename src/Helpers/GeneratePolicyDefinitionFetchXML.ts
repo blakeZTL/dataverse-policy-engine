@@ -29,9 +29,9 @@ export function GeneratePolicyDefinitionFetchXML(
                             <attribute name="${policy.entityColumnName}" />
                             <attribute name="${policy.attributeColumnName}" />
                             <attribute name="${policy.valueColumnName}" />
-                            <attribute name="${policy.shouldHideColumnName}" />
-                            <attribute name="${policy.shouldLockColumnName}" />
-                            <attribute name="${policy.shouldRequireColumnName}" />
+                            <attribute name="${policy.visibilityColumnName}" />
+                            <attribute name="${policy.allowedColumnName}" />
+                            <attribute name="${policy.requiredColumnName}" />
                             <filter>
                                 <condition attribute="${policy.entityColumnName}" operator="eq" value="${entityName}" />`;
     console.debug(

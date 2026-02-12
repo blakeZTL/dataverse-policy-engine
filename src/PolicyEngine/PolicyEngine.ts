@@ -77,9 +77,9 @@ export async function PolicyEngine(
         const pd: PolicyDefinition = {
             attribute: entity[policy.attributeColumnName],
             value: entity[policy.valueColumnName],
-            shouldHide: !!entity[policy.shouldHideColumnName],
-            shouldLock: !!entity[policy.shouldLockColumnName],
-            shouldRequire: !!entity[policy.shouldRequireColumnName]
+            visible: !!entity[policy.visibilityColumnName],
+            allowed: !!entity[policy.allowedColumnName],
+            required: !!entity[policy.requiredColumnName]
         };
         return pd;
     });
@@ -108,12 +108,12 @@ export async function PolicyEngine(
             continue;
         }
         console.debug(
-            `PolicyEngine: Applying policy to attribute "${pd.attribute}": Hide=${pd.shouldHide}, Lock=${pd.shouldLock}, Require=${pd.shouldRequire}`
+            `PolicyEngine: Applying policy to attribute "${pd.attribute}": Visible=${pd.visible}, Lock=${pd.allowed}, Require=${pd.required}`
         );
-        control.setVisible(!pd.shouldHide);
+        control.setVisible(pd.visible);
 
-        control.setDisabled(pd.shouldLock);
+        control.setDisabled(!pd.allowed);
 
-        attribute.setRequiredLevel(pd.shouldRequire ? 'required' : 'none');
+        attribute.setRequiredLevel(pd.required ? 'required' : 'none');
     }
 }

@@ -17,9 +17,9 @@ describe('GeneratePolicyDefinitionFetchXML', () => {
             attributeColumnName: 'name',
             valueColumnName: 'status',
             valueColumnType: ValueColumnType.String,
-            shouldHideColumnName: 'shouldhide',
-            shouldLockColumnName: 'shouldlock',
-            shouldRequireColumnName: 'shouldrequire'
+            visibilityColumnName: 'shouldhide',
+            allowedColumnName: 'shouldlock',
+            requiredColumnName: 'shouldrequire'
         });
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         expect(() => GeneratePolicyDefinitionFetchXML(pd, '' as any, 'value')).toThrow(
@@ -34,9 +34,9 @@ describe('GeneratePolicyDefinitionFetchXML', () => {
             attributeColumnName: 'name',
             valueColumnName: 'status',
             valueColumnType: ValueColumnType.String,
-            shouldHideColumnName: 'shouldhide',
-            shouldLockColumnName: 'shouldlock',
-            shouldRequireColumnName: 'shouldrequire'
+            visibilityColumnName: 'shouldhide',
+            allowedColumnName: 'shouldlock',
+            requiredColumnName: 'shouldrequire'
         });
         expect(() => GeneratePolicyDefinitionFetchXML(pd, 'account', null)).toThrow(
             /value is required/
@@ -50,9 +50,9 @@ describe('GeneratePolicyDefinitionFetchXML', () => {
             attributeColumnName: 'name',
             valueColumnName: 'status',
             valueColumnType: ValueColumnType.String,
-            shouldHideColumnName: 'shouldhide',
-            shouldLockColumnName: 'shouldlock',
-            shouldRequireColumnName: 'shouldrequire'
+            visibilityColumnName: 'shouldhide',
+            allowedColumnName: 'shouldlock',
+            requiredColumnName: 'shouldrequire'
         });
 
         const xml = GeneratePolicyDefinitionFetchXML(pd, 'account', 'active');
@@ -69,9 +69,9 @@ describe('GeneratePolicyDefinitionFetchXML', () => {
             attributeColumnName: 'name',
             valueColumnName: 'statuscode',
             valueColumnType: ValueColumnType.Int,
-            shouldHideColumnName: 'shouldhide',
-            shouldLockColumnName: 'shouldlock',
-            shouldRequireColumnName: 'shouldrequire'
+            visibilityColumnName: 'shouldhide',
+            allowedColumnName: 'shouldlock',
+            requiredColumnName: 'shouldrequire'
         });
 
         const xml = GeneratePolicyDefinitionFetchXML(pd, 'account', 1);
@@ -85,9 +85,9 @@ describe('GeneratePolicyDefinitionFetchXML', () => {
             attributeColumnName: 'name',
             valueColumnName: 'isactive',
             valueColumnType: ValueColumnType.Boolean,
-            shouldHideColumnName: 'shouldhide',
-            shouldLockColumnName: 'shouldlock',
-            shouldRequireColumnName: 'shouldrequire'
+            visibilityColumnName: 'shouldhide',
+            allowedColumnName: 'shouldlock',
+            requiredColumnName: 'shouldrequire'
         });
 
         const xml = GeneratePolicyDefinitionFetchXML(pd, 'account', true);
@@ -101,9 +101,9 @@ describe('GeneratePolicyDefinitionFetchXML', () => {
             attributeColumnName: 'name',
             valueColumnName: 'createdon',
             valueColumnType: ValueColumnType.DateTime,
-            shouldHideColumnName: 'shouldhide',
-            shouldLockColumnName: 'shouldlock',
-            shouldRequireColumnName: 'shouldrequire'
+            visibilityColumnName: 'shouldhide',
+            allowedColumnName: 'shouldlock',
+            requiredColumnName: 'shouldrequire'
         });
 
         const date = new Date('2023-01-01T00:00:00Z');
@@ -118,9 +118,9 @@ describe('GeneratePolicyDefinitionFetchXML', () => {
             attributeColumnName: 'name',
             valueColumnName: 'revenue',
             valueColumnType: ValueColumnType.Decimal,
-            shouldHideColumnName: 'shouldhide',
-            shouldLockColumnName: 'shouldlock',
-            shouldRequireColumnName: 'shouldrequire'
+            visibilityColumnName: 'shouldhide',
+            allowedColumnName: 'shouldlock',
+            requiredColumnName: 'shouldrequire'
         });
 
         const xml = GeneratePolicyDefinitionFetchXML(pd, 'account', 100.5);
@@ -134,9 +134,9 @@ describe('GeneratePolicyDefinitionFetchXML', () => {
             attributeColumnName: 'name',
             valueColumnName: 'statuscode',
             valueColumnType: ValueColumnType.OptionSetValue,
-            shouldHideColumnName: 'shouldhide',
-            shouldLockColumnName: 'shouldlock',
-            shouldRequireColumnName: 'shouldrequire'
+            visibilityColumnName: 'shouldhide',
+            allowedColumnName: 'shouldlock',
+            requiredColumnName: 'shouldrequire'
         });
 
         const value: Xrm.OptionSetValue = { value: 1, text: 'Active' };
@@ -151,9 +151,9 @@ describe('GeneratePolicyDefinitionFetchXML', () => {
             attributeColumnName: 'dpe_attribute',
             valueColumnName: 'dpe_lookupcomparison',
             valueColumnType: ValueColumnType.EntityReference,
-            shouldHideColumnName: 'dpe_shouldhide',
-            shouldLockColumnName: 'dpe_shouldlock',
-            shouldRequireColumnName: 'dpe_shouldrequire'
+            visibilityColumnName: 'dpe_shouldhide',
+            allowedColumnName: 'dpe_shouldlock',
+            requiredColumnName: 'dpe_shouldrequire'
         });
 
         const value: Xrm.LookupValue = {
@@ -171,9 +171,9 @@ describe('GeneratePolicyDefinitionFetchXML', () => {
             entityColumnName: 'accountid',
             attributeColumnName: 'name',
             valueColumnName: 'status',
-            shouldHideColumnName: 'shouldhide',
-            shouldLockColumnName: 'shouldlock',
-            shouldRequireColumnName: 'shouldrequire',
+            visibilityColumnName: 'shouldhide',
+            allowedColumnName: 'shouldlock',
+            requiredColumnName: 'shouldrequire',
             // bypass TS to simulate bad runtime value
             valueColumnType: 'NotAType'
         } as unknown as Policy;

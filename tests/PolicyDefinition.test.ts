@@ -10,9 +10,9 @@ describe('Policy', () => {
             attributeColumnName: 'name',
             valueColumnName: 'status',
             valueColumnType: ValueColumnType.String,
-            shouldHideColumnName: 'hide',
-            shouldLockColumnName: 'lock',
-            shouldRequireColumnName: 'require'
+            visibilityColumnName: 'hide',
+            allowedColumnName: 'lock',
+            requiredColumnName: 'require'
         } as const;
 
         const pd = Policy.fromJSON(json);
@@ -22,9 +22,9 @@ describe('Policy', () => {
         expect(pd.attributeColumnName).toBe('name');
         expect(pd.valueColumnName).toBe('status');
         expect(pd.valueColumnType).toBe(ValueColumnType.String);
-        expect(pd.shouldHideColumnName).toBe('hide');
-        expect(pd.shouldLockColumnName).toBe('lock');
-        expect(pd.shouldRequireColumnName).toBe('require');
+        expect(pd.visibilityColumnName).toBe('hide');
+        expect(pd.allowedColumnName).toBe('lock');
+        expect(pd.requiredColumnName).toBe('require');
         expect(pd.toJSON()).toEqual(json);
     });
 
