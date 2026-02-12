@@ -2,13 +2,24 @@ import { XrmMockGenerator } from 'xrm-mock';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { defineConfig } from 'vitest/config';
 
-import { PolicyEngine } from '../src/PolicyEngine/PolicyEngine';
+import { PolicyEngine } from '../src/PolicyEngine';
 
 export default defineConfig({
     test: {
         silent: false // Enable console output
     }
 });
+
+const policy = {
+    logicalName: 'policydefinition',
+    entityColumnName: 'entity',
+    attributeColumnName: 'attribute',
+    valueColumnName: 'status',
+    valueColumnType: 'String',
+    visibilityColumnName: 'visible',
+    allowedColumnName: 'allowed',
+    requiredColumnName: 'required'
+};
 
 describe('PolicyEngine', () => {
     beforeEach(() => {
@@ -63,18 +74,26 @@ describe('PolicyEngine', () => {
         ).rejects.toThrow(/policy is required/);
     });
 
-    it('throws when attribute is not found on the form', async () => {
+    it('throws when supplied policy is invalid', async () => {
         const eventContext = XrmMockGenerator.getEventContext();
-        const policy = {
+        const invalidPolicy = {
             logicalName: 'account',
             entityColumnName: 'accountid',
             attributeColumnName: 'name',
             valueColumnName: 'status',
-            valueColumnType: 'String',
-            visibilityColumnName: 'visibilitytest',
-            allowedColumnName: 'allowedtest',
-            requiredColumnName: 'requiredtest'
+            valueColumnType: 'InvalidType'
         };
+        await expect(() =>
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            PolicyEngine(eventContext, 'name', invalidPolicy as any)
+        ).rejects.toThrow(
+            'Policy.fromJSON: "valueColumnType" must be one of: OptionSetValue, EntityReference, String, Int, Decimal, Boolean, DateTime'
+        );
+    });
+
+    it('throws when attribute is not found on the form', async () => {
+        const eventContext = XrmMockGenerator.getEventContext();
+
         await expect(() =>
             PolicyEngine(eventContext, 'nonexistentattribute', policy)
         ).rejects.toThrow(/Attribute "nonexistentattribute" not found on the form/);
@@ -153,6 +172,7 @@ describe('PolicyEngine', () => {
         'String Comparison: applies policy correctly when a matching policy definition is found: $name',
         async ({ mockResponse, expected }) => {
             const eventContext = XrmMockGenerator.getEventContext();
+            const formContext = eventContext.getFormContext();
             const statusAttribute = XrmMockGenerator.Attribute.createString(
                 'status',
                 'allow'
@@ -163,30 +183,19 @@ describe('PolicyEngine', () => {
                 true,
                 false
             );
-            const policy = {
-                logicalName: 'policydefinition',
-                entityColumnName: 'entity',
-                attributeColumnName: 'attribute',
-                valueColumnName: 'status',
-                valueColumnType: 'String',
-                visibilityColumnName: 'visible',
-                allowedColumnName: 'allowed',
-                requiredColumnName: 'required'
-            };
-
             vi.spyOn(Xrm.WebApi, 'retrieveMultipleRecords').mockResolvedValue(
                 mockResponse
             );
 
             await PolicyEngine(eventContext, 'status', policy);
 
-            const visibilityControl = Xrm.Page.getControl(
+            const visibilityControl = formContext.getControl(
                 'visibilitytest'
             ) as Xrm.Controls.StandardControl;
-            const allowedControl = Xrm.Page.getControl(
+            const allowedControl = formContext.getControl(
                 'allowedtest'
             ) as Xrm.Controls.StandardControl;
-            const requiredAttribute = Xrm.Page.getAttribute(
+            const requiredAttribute = formContext.getAttribute(
                 'requiredtest'
             ) as Xrm.Attributes.Attribute<string>;
 
@@ -269,6 +278,7 @@ describe('PolicyEngine', () => {
         'Choice Comparison: applies policy correctly when a matching policy definition is found: $name',
         async ({ mockResponse, expected }) => {
             const eventContext = XrmMockGenerator.getEventContext();
+            const formContext = eventContext.getFormContext();
             const statusAttribute = XrmMockGenerator.Attribute.createOptionSet(
                 'status',
                 0
@@ -279,16 +289,7 @@ describe('PolicyEngine', () => {
                 true,
                 false
             );
-            const policy = {
-                logicalName: 'policydefinition',
-                entityColumnName: 'entity',
-                attributeColumnName: 'attribute',
-                valueColumnName: 'status',
-                valueColumnType: 'OptionSetValue',
-                visibilityColumnName: 'visible',
-                allowedColumnName: 'allowed',
-                requiredColumnName: 'required'
-            };
+            policy.valueColumnType = 'OptionSetValue';
 
             vi.spyOn(Xrm.WebApi, 'retrieveMultipleRecords').mockResolvedValue(
                 mockResponse
@@ -296,13 +297,13 @@ describe('PolicyEngine', () => {
 
             await PolicyEngine(eventContext, 'status', policy);
 
-            const visibilityControl = Xrm.Page.getControl(
+            const visibilityControl = formContext.getControl(
                 'visibilitytest'
             ) as Xrm.Controls.StandardControl;
-            const allowedControl = Xrm.Page.getControl(
+            const allowedControl = formContext.getControl(
                 'allowedtest'
             ) as Xrm.Controls.StandardControl;
-            const requiredAttribute = Xrm.Page.getAttribute(
+            const requiredAttribute = formContext.getAttribute(
                 'requiredtest'
             ) as Xrm.Attributes.Attribute<string>;
 
@@ -390,6 +391,7 @@ describe('PolicyEngine', () => {
         'Lookup Comparison: applies policy correctly when a matching policy definition is found: $name',
         async ({ mockResponse, expected }) => {
             const eventContext = XrmMockGenerator.getEventContext();
+            const formContext = eventContext.getFormContext();
 
             const statusAttribute = XrmMockGenerator.Attribute.createLookup(
                 'status',
@@ -401,16 +403,7 @@ describe('PolicyEngine', () => {
                 true,
                 false
             );
-            const policy = {
-                logicalName: 'policydefinition',
-                entityColumnName: 'entity',
-                attributeColumnName: 'attribute',
-                valueColumnName: 'status',
-                valueColumnType: 'EntityReference',
-                visibilityColumnName: 'visible',
-                allowedColumnName: 'allowed',
-                requiredColumnName: 'required'
-            };
+            policy.valueColumnType = 'EntityReference';
 
             vi.spyOn(Xrm.WebApi, 'retrieveMultipleRecords').mockResolvedValue(
                 mockResponse
@@ -418,13 +411,13 @@ describe('PolicyEngine', () => {
 
             await PolicyEngine(eventContext, 'status', policy);
 
-            const visibilityControl = Xrm.Page.getControl(
+            const visibilityControl = formContext.getControl(
                 'visibilitytest'
             ) as Xrm.Controls.StandardControl;
-            const allowedControl = Xrm.Page.getControl(
+            const allowedControl = formContext.getControl(
                 'allowedtest'
             ) as Xrm.Controls.StandardControl;
-            const requiredAttribute = Xrm.Page.getAttribute(
+            const requiredAttribute = formContext.getAttribute(
                 'requiredtest'
             ) as Xrm.Attributes.Attribute<string>;
 
