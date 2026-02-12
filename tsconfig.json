@@ -1,0 +1,19 @@
+{
+    "compilerOptions": {
+        "outDir": "dist",
+        "target": "ESNext",
+        "module": "ESNext",
+        "moduleResolution": "node",
+        "noImplicitAny": true
+    },
+    "include": [
+        "src",
+        "tests",
+        ".eslintrc.js",
+        "."
+    ],
+    "exclude": [
+        "node_modules",
+        "examples/**"
+    ]
+}
