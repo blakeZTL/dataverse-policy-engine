@@ -13,33 +13,35 @@ export async function PolicyEngine(
     if (!suppliedPolicy) {
         throw new TypeError('PolicyEngine: policy is required');
     }
+    let debugPrefix = 'PolicyEngine';
 
     let policy: Policy;
     try {
         policy = Policy.fromJSON(suppliedPolicy);
     } catch (error) {
-        console.error('PolicyEngine: Error parsing policy', error);
+        console.error(`${debugPrefix}: Error parsing policy`, error);
         throw error;
     }
 
     const formContext = eventContext.getFormContext();
     const entityName = formContext.data.entity.getEntityName();
-    console.debug(`PolicyEngine: Evaluating policy for entity "${entityName}"`);
+    debugPrefix += ` [${entityName}-${attributeName}]`;
+    console.debug(`${debugPrefix}: Evaluating policy for entity "${entityName}"`);
 
     const valueColumn = formContext.getAttribute(attributeName);
     if (!valueColumn) {
         throw new Error(
-            `PolicyEngine: Attribute "${attributeName}" not found on the form`
+            `${debugPrefix}: Attribute "${attributeName}" not found on the form`
         );
     }
     if (valueColumn.getValue() === null) {
         console.debug(
-            `PolicyEngine: Attribute "${attributeName}" has a null value, skipping policy evaluation`
+            `${debugPrefix}: Attribute "${attributeName}" has a null value, skipping policy evaluation`
         );
         return;
     }
     console.debug(
-        `PolicyEngine: Retrieved valuefrom attribute "${attributeName}" for policy evaluation`,
+        `${debugPrefix}: Retrieved value from attribute "${attributeName}" for policy evaluation`,
         valueColumn.getValue()
     );
 
@@ -56,7 +58,7 @@ export async function PolicyEngine(
 
     const fetchXML = GeneratePolicyDefinitionFetchXML(policy, entityName, value);
     console.debug(
-        'PolicyEngine: Generated FetchXML for policy definition retrieval',
+        `${debugPrefix}: Generated FetchXML for policy definition retrieval`,
         fetchXML
     );
 
@@ -65,11 +67,11 @@ export async function PolicyEngine(
         `?fetchXml=${encodeURIComponent(fetchXML)}`
     );
     if (response.entities.length === 0) {
-        console.debug('PolicyEngine: No matching policy definition found, skipping');
+        console.debug(`${debugPrefix}: No matching policy definition found, skipping`);
         return;
     }
     console.debug(
-        `PolicyEngine: Retrieved ${response.entities.length} matching policy definitions from "${policy.logicalName}"`,
+        `${debugPrefix}: Retrieved ${response.entities.length} matching policy definitions from "${policy.logicalName}"`,
         response.entities
     );
 
@@ -84,7 +86,7 @@ export async function PolicyEngine(
         return pd;
     });
     console.debug(
-        `PolicyEngine: Mapped ${policies.length} policy definitions for application`,
+        `${debugPrefix}: Mapped ${policies.length} policy definitions for application`,
         policies
     );
 
@@ -95,7 +97,7 @@ export async function PolicyEngine(
 
         if (!control) {
             console.warn(
-                `PolicyEngine: Control for attribute "${pd.attribute}" not found on the form, skipping this policy definition`
+                `${debugPrefix}: Control for attribute "${pd.attribute}" not found on the form, skipping this policy definition`
             );
             continue;
         }
@@ -103,12 +105,12 @@ export async function PolicyEngine(
         const attribute = formContext.getAttribute(pd.attribute);
         if (!attribute) {
             console.warn(
-                `PolicyEngine: Attribute "${pd.attribute}" not found on the form, cannot set required level for "${pd.attribute}"`
+                `${debugPrefix}: Attribute "${pd.attribute}" not found on the form, cannot set required level for "${pd.attribute}"`
             );
             continue;
         }
         console.debug(
-            `PolicyEngine: Applying policy to attribute "${pd.attribute}": Visible=${pd.visible}, Lock=${pd.allowed}, Require=${pd.required}`
+            `${debugPrefix}: Applying policy to attribute "${pd.attribute}": Visible=${pd.visible}, Lock=${pd.allowed}, Require=${pd.required}`
         );
         control.setVisible(pd.visible);
 
