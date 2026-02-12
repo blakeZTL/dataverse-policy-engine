@@ -20,6 +20,10 @@ const policy = {
     allowedColumnName: 'allowed',
     requiredColumnName: 'required'
 };
+const policyConfig = {
+    attributeName: 'status',
+    suppliedPolicy: policy
+};
 let eventContext: Xrm.Events.EventContext;
 let formContext: Xrm.FormContext;
 
@@ -66,16 +70,16 @@ describe('PolicyEngine', () => {
     });
 
     it('throws when eventContext is missing', async () => {
-        await expect(() => PolicyEngine(undefined, 'name', {})).rejects.toThrow(
-            /eventContext is required/
-        );
+        await expect(() =>
+            PolicyEngine(undefined, { attributeName: 'name', suppliedPolicy: policy })
+        ).rejects.toThrow(/eventContext is required/);
     });
 
     it('throws when policy is missing', async () => {
         const eventContext = XrmMockGenerator.getEventContext();
-        await expect(() =>
-            PolicyEngine(eventContext, 'name', undefined)
-        ).rejects.toThrow(/policy is required/);
+        await expect(() => PolicyEngine(eventContext, undefined)).rejects.toThrow(
+            /policy is required/
+        );
     });
 
     it('throws when supplied policy is invalid', async () => {
@@ -87,9 +91,13 @@ describe('PolicyEngine', () => {
             valueColumnName: 'status',
             valueColumnType: 'InvalidType'
         };
+        const policyConfig = {
+            attributeName: 'name',
+            suppliedPolicy: invalidPolicy
+        };
         await expect(() =>
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            PolicyEngine(eventContext, 'name', invalidPolicy as any)
+            PolicyEngine(eventContext, policyConfig as any)
         ).rejects.toThrow(
             'Policy.fromJSON: "valueColumnType" must be one of: OptionSetValue, EntityReference, String, Int, Decimal, Boolean, DateTime'
         );
@@ -99,7 +107,10 @@ describe('PolicyEngine', () => {
         const eventContext = XrmMockGenerator.getEventContext();
 
         await expect(() =>
-            PolicyEngine(eventContext, 'nonexistentattribute', policy)
+            PolicyEngine(eventContext, {
+                attributeName: 'nonexistentattribute',
+                suppliedPolicy: policy
+            })
         ).rejects.toThrow(/Attribute "nonexistentattribute" not found on the form/);
     });
 
@@ -189,7 +200,7 @@ describe('PolicyEngine', () => {
                 mockResponse
             );
 
-            await PolicyEngine(eventContext, 'status', policy);
+            await PolicyEngine(eventContext, policyConfig);
 
             const visibilityControl = formContext.getControl(
                 'visibilitytest'
@@ -295,7 +306,7 @@ describe('PolicyEngine', () => {
                 mockResponse
             );
 
-            await PolicyEngine(eventContext, 'status', policy);
+            await PolicyEngine(eventContext, policyConfig);
 
             const visibilityControl = formContext.getControl(
                 'visibilitytest'
@@ -406,7 +417,7 @@ describe('PolicyEngine', () => {
                 mockResponse
             );
 
-            await PolicyEngine(eventContext, 'status', policy);
+            await PolicyEngine(eventContext, policyConfig);
 
             const visibilityControl = formContext.getControl(
                 'visibilitytest'

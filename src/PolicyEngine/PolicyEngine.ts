@@ -1,23 +1,22 @@
 import { GeneratePolicyDefinitionFetchXML } from '../Helpers/GeneratePolicyDefinitionFetchXML';
 import { ValueParser } from '../Helpers/ValueParser';
-import { Policy, PolicyDefinition } from '../types';
+import { Policy, PolicyDefinition, PolicyEngineConfig } from '../types';
 
 export async function PolicyEngine(
     eventContext: Xrm.Events.EventContext,
-    attributeName: string,
-    suppliedPolicy: object
+    policyConfig: PolicyEngineConfig
 ): Promise<void> {
     if (!eventContext) {
         throw new TypeError('PolicyEngine: eventContext is required');
     }
-    if (!suppliedPolicy) {
+    if (!policyConfig) {
         throw new TypeError('PolicyEngine: policy is required');
     }
     let debugPrefix = 'PolicyEngine';
 
     let policy: Policy;
     try {
-        policy = Policy.fromJSON(suppliedPolicy);
+        policy = Policy.fromJSON(policyConfig.suppliedPolicy);
     } catch (error) {
         console.error(`${debugPrefix}: Error parsing policy`, error);
         throw error;
@@ -25,23 +24,23 @@ export async function PolicyEngine(
 
     const formContext = eventContext.getFormContext();
     const entityName = formContext.data.entity.getEntityName();
-    debugPrefix += ` [${entityName}-${attributeName}]`;
+    debugPrefix += ` [${entityName}-${policyConfig.attributeName}]`;
     console.debug(`${debugPrefix}: Evaluating policy for entity "${entityName}"`);
 
-    const valueColumn = formContext.getAttribute(attributeName);
+    const valueColumn = formContext.getAttribute(policyConfig.attributeName);
     if (!valueColumn) {
         throw new Error(
-            `${debugPrefix}: Attribute "${attributeName}" not found on the form`
+            `${debugPrefix}: Attribute "${policyConfig.attributeName}" not found on the form`
         );
     }
     if (valueColumn.getValue() === null) {
         console.debug(
-            `${debugPrefix}: Attribute "${attributeName}" has a null value, skipping policy evaluation`
+            `${debugPrefix}: Attribute "${policyConfig.attributeName}" has a null value, skipping policy evaluation`
         );
         return;
     }
     console.debug(
-        `${debugPrefix}: Retrieved value from attribute "${attributeName}" for policy evaluation`,
+        `${debugPrefix}: Retrieved value from attribute "${policyConfig.attributeName}" for policy evaluation`,
         valueColumn.getValue()
     );
 

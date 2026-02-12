@@ -8,6 +8,11 @@ export enum ValueColumnType {
     DateTime = 'DateTime'
 }
 
+export interface PolicyEngineConfig {
+    attributeName: string;
+    suppliedPolicy: object;
+}
+
 export interface PolicyDefinition {
     attribute: string;
     value: string;

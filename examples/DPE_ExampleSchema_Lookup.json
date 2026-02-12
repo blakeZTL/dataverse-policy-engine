@@ -1,10 +1,13 @@
 {
-	"logicalName":"dpe_policydefinition",
-	"entityColumnName":"dpe_entity",
-	"attributeColumnName":"dpe_attribute",
-	"valueColumnName":"dpe_lookupcomparison",
-	"valueColumnType":"EntityReference",
-	"shouldHideColumnName":"dpe_shouldhide",
-	"shouldLockColumnName":"dpe_shouldlock",
-	"shouldRequireColumnName":"dpe_shouldrequire"
+    "attributeName": "dpe_attribute",
+    "suppliedPolicy": {
+        "logicalName": "dpe_policydefinition",
+        "entityColumnName": "dpe_entity",
+        "attributeColumnName": "dpe_attribute",
+        "valueColumnName": "dpe_lookupcomparison",
+        "valueColumnType": "EntityReference",
+        "shouldHideColumnName": "dpe_shouldhide",
+        "shouldLockColumnName": "dpe_shouldlock",
+        "shouldRequireColumnName": "dpe_shouldrequire"
+    }
 }
