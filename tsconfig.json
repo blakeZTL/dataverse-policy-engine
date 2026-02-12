@@ -3,8 +3,9 @@
         "outDir": "dist",
         "target": "ESNext",
         "module": "ESNext",
-        "moduleResolution": "node",
-        "noImplicitAny": true
+        "moduleResolution": "bundler",
+        "noImplicitAny": true,
+        "skipLibCheck": true
     },
     "include": [
         "src",
@@ -14,6 +15,7 @@
     ],
     "exclude": [
         "node_modules",
-        "examples/**"
+        "examples/**",
+        "plugins/**"
     ]
 }
