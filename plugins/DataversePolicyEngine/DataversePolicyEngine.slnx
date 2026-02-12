@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="DataversePolicyEnginePlugins.Tests/DataversePolicyEnginePlugins.Tests.csproj" />
+  <Project Path="DataversePolicyEnginePlugins/DataversePolicyEnginePlugins.csproj" Id="bde9c0b8-2617-462c-b2cc-a73d57b757ff" />
+  <Properties Name="CRMSolutionProperties">
+    <Property Name="SolutionIsBoundToCRM" Value="True" />
+  </Properties>
+</Solution>
