@@ -1,283 +1,95 @@
-# dataverse-policy-engine
+# Dataverse Policy Engine
 
-A Dataverse client-side web resource project built with TypeScript.
+A TypeScript library for enforcing dynamic policies on Microsoft Dataverse (Dynamics 365) form fields. It retrieves policy definitions via the Web API and applies visibility, editability, and requirement rules based on attribute values.
 
-## Project Structure
+## Features
 
-This project follows a structured approach to organizing Dataverse web resource handlers:
+- Fetches policy definitions using FetchXML queries.
+- Supports various data types: String, Int, Boolean, DateTime, Decimal, OptionSetValue, EntityReference.
+- Applies policies to form controls: visibility, disabled state, and required level.
+- Integrates with Xrm.WebApi for Dataverse interactions.
+- Includes helpers for parsing values and generating FetchXML.
 
-```
-src/
-├── index.ts                 # Main entry point - exports all handlers
-└── EntityName/              # Replace with your actual entity name (e.g., Account, Contact)
-    ├── index.ts             # Entity-level exports
-    ├── OnLoad/              # Form OnLoad event handlers
-    │   ├── index.ts         # OnLoad exports
-    │   └── HandleSomethingOnLoad.ts
-    ├── OnChange/            # Field OnChange event handlers
-    │   ├── index.ts         # OnChange exports
-    │   └── HandleFieldChange.ts
-    └── OnSave/              # Form OnSave event handlers
-        ├── index.ts         # OnSave exports
-        └── HandleFormSave.ts
-```
+## Installation
 
-## Export Patterns
+1. Clone the repository:
 
-### 1. Individual Function Exports (Recommended)
+    ```bash
+    git clone https://github.com/blakeZTL/dataverse-policy-engine.git
+    cd dataverse-policy-engine
+    ```
 
-Export specific functions for each event handler:
+2. Install dependencies:
 
-```typescript
-// src/Account/OnLoad/HandleAccountLoad.ts
-export function handleAccountLoad(context: Xrm.Events.EventContext): void {
-    const formContext = context.getFormContext();
-    // Your logic here
-}
+    ```bash
+    npm install
+    ```
 
-// src/Account/OnChange/HandleNameChange.ts
-export function handleAccountNameChange(context: Xrm.Events.EventContext): void {
-    const formContext = context.getFormContext();
-    const nameControl = formContext.getControl("name");
-    // Your logic here
-}
-```
+3. Build the project:
+    ```bash
+    npm run build
+    ```
 
-### 2. Namespace/Object Export Pattern
+## Usage
 
-Group related functions under a namespace:
+### Basic Example
+
+Import the `PolicyEngine` function and call it in a form event handler (e.g., onLoad or onChange).
 
 ```typescript
-// src/Account/AccountHandlers.ts
-export const AccountHandlers = {
-    onLoad: {
-        handleFormLoad: (context: Xrm.Events.EventContext) => {
-            // Load logic
-        },
-        initializeForm: (context: Xrm.Events.EventContext) => {
-            // Initialization logic
-        }
-    },
-    onChange: {
-        handleNameChange: (context: Xrm.Events.EventContext) => {
-            // Name change logic
-        },
-        handleStatusChange: (context: Xrm.Events.EventContext) => {
-            // Status change logic
-        }
-    }
-};
-```
+import { PolicyEngine } from './PolicyEngine/index';
 
-### 3. Class-Based Pattern
-
-For complex entities with shared state:
-
-```typescript
-// src/Account/AccountManager.ts
-export class AccountManager {
-    private formContext: Xrm.FormContext;
-
-    constructor(context: Xrm.Events.EventContext) {
-        this.formContext = context.getFormContext();
-    }
-
-    public handleLoad(): void {
-        this.initializeFields();
-        this.setupValidation();
-    }
-
-    public handleNameChange(): void {
-        const name = this.formContext.getAttribute("name")?.getValue();
-        // Handle name change
-    }
-
-    private initializeFields(): void {
-        // Private helper methods
-    }
-}
-
-// Usage in form events:
-export function handleAccountLoad(context: Xrm.Events.EventContext): void {
-    const manager = new AccountManager(context);
-    manager.handleLoad();
-}
-```
-
-## Best Practices
-
-### 1. Function Naming
-- Use descriptive names that indicate the event and purpose
-- Prefix with `handle` for event handlers: `handleAccountLoad`, `handleNameChange`
-- Use camelCase for consistency
-
-### 2. Error Handling
-Always wrap your handlers in try-catch blocks:
-
-```typescript
-export function handleAccountLoad(context: Xrm.Events.EventContext): void {
-    try {
-        const formContext = context.getFormContext();
-        // Your logic here
-    } catch (error) {
-        console.error('Error in handleAccountLoad:', error);
-        // Optional: Show user-friendly message
-        Xrm.Navigation.openAlertDialog({
-            text: "An error occurred while loading the form.",
-            title: "Error"
-        });
-    }
-}
-```
-
-### 3. Type Safety
-Leverage TypeScript for better development experience:
-
-```typescript
-interface AccountData {
-    name: string;
-    accountnumber: string;
-    telephone1: string;
-}
-
-export function handleAccountLoad(context: Xrm.Events.EventContext): void {
-    const formContext = context.getFormContext();
-    
-    // Type-safe attribute access
-    const nameAttr = formContext.getAttribute<string>("name");
-    const phoneAttr = formContext.getAttribute<string>("telephone1");
-    
-    if (nameAttr && phoneAttr) {
-        // Your logic here
-    }
-}
-```
-
-### 4. Async Operations
-Handle asynchronous operations properly:
-
-```typescript
-export async function handleAccountLoad(context: Xrm.Events.EventContext): Promise<void> {
-    try {
-        const formContext = context.getFormContext();
-        
-        // Async web API call
-        const relatedData = await Xrm.WebApi.retrieveMultipleRecords(
-            "contact", 
-            "?$filter=parentcustomerid eq " + formContext.data.entity.getId()
-        );
-        
-        // Process the data
-        console.log(`Found ${relatedData.entities.length} related contacts`);
-    } catch (error) {
-        console.error('Error loading related data:', error);
-    }
-}
-```
-
-### 5. Form Context Validation
-Always validate form context availability:
-
-```typescript
-export function handleFieldChange(context: Xrm.Events.EventContext): void {
-    const formContext = context.getFormContext();
-    
-    if (!formContext) {
-        console.warn('Form context not available');
-        return;
-    }
-    
-    const attribute = context.getEventSource();
-    if (!attribute) {
-        console.warn('Event source not available');
-        return;
-    }
-    
-    // Your logic here
-}
-```
-
-## Dataverse Web API Examples
-
-### Retrieve Records
-```typescript
-// Get current record data
-const recordId = formContext.data.entity.getId();
-const entityName = formContext.data.entity.getEntityName();
-
-const record = await Xrm.WebApi.retrieveRecord(entityName, recordId, "?$select=name,telephone1");
-```
-
-### Create Records
-```typescript
-const newContact = {
-    firstname: "John",
-    lastname: "Doe",
-    emailaddress1: "john.doe@example.com"
+// Define your policy configuration
+const policy = {
+    logicalName: 'dpe_policydefinition',
+    entityColumnName: 'dpe_entity',
+    attributeColumnName: 'dpe_attribute',
+    valueColumnName: 'dpe_value',
+    valueColumnType: 'String',
+    visibilityColumnName: 'dpe_visible',
+    allowedColumnName: 'dpe_allowed',
+    requiredColumnName: 'dpe_required'
 };
 
-const result = await Xrm.WebApi.createRecord("contact", newContact);
+// In your form script (e.g., onLoad)
+function onLoad(executionContext: Xrm.Events.EventContext) {
+    PolicyEngine(executionContext, 'name', policy).catch(console.error);
+}
 ```
 
-### Update Records
-```typescript
-const updateData = {
-    telephone1: "555-0123"
-};
+### Policy Configuration
 
-await Xrm.WebApi.updateRecord(entityName, recordId, updateData);
-```
+- `logicalName`: The Dataverse table name for policy definitions.
+- `entityColumnName`: Column for the entity name.
+- `attributeColumnName`: Column for the attribute name.
+- `valueColumnName`: Column for the value to match.
+- `valueColumnType`: Data type of the value (String, Int, Boolean, DateTime, Decimal, OptionSetValue, EntityReference).
+- `visibilityColumnName`: Column for visibility flag.
+- `allowedColumnName`: Column for editability flag.
+- `requiredColumnName`: Column for required flag.
 
-## Building and Deployment
+### Helpers
 
-### Development
+- `GeneratePolicyDefinitionFetchXML`: Generates FetchXML for querying policy definitions.
+- `ValueParser`: Parses attribute values for FetchXML conditions.
+
+## Testing
+
+Run tests with Vitest:
+
 ```bash
-# Install dependencies
-pnpm install
-
-# Build the project
-pnpm run build
-
-# Lint your code
-pnpm run lint
-
-# Format your code
-pnpm run format
+npm test
 ```
 
-### Deployment
-1. Run `pnpm run build` to compile TypeScript
-2. The compiled JavaScript will be in the `dist/` folder
-3. Upload `dist/bundle.js` as a JavaScript web resource in Dataverse
-4. Configure form events to call your exported functions
+Tests use Xrm-Mock for simulating Dataverse environments.
 
-## Form Event Configuration
+## Contributing
 
-In Dataverse form designer, reference your functions like this:
-
-- **Library**: `your_webresource_name`
-- **Function**: `YourNamespace.handleAccountLoad` (for namespace exports)
-- **Function**: `handleAccountLoad` (for direct exports)
-
-## Debugging
-
-Use browser developer tools to debug your web resources:
-
-```typescript
-// Add debugging statements
-console.log('Form loaded:', formContext.data.entity.getEntityName());
-console.debug('Current user:', Xrm.Utility.getGlobalContext().userSettings.userId);
-
-// Set breakpoints in browser dev tools
-debugger; // This will pause execution
-```
-
-## Additional Resources
-
-- [Microsoft Dataverse Web API Reference](https://docs.microsoft.com/en-us/power-apps/developer/data-platform/webapi/reference/about)
-- [Client API Reference](https://docs.microsoft.com/en-us/power-apps/developer/model-driven-apps/clientapi/reference)
-- [TypeScript Handbook](https://www.typescriptlang.org/docs/)
+1. Fork the repository.
+2. Create a feature branch.
+3. Make changes and add tests.
+4. Submit a pull request.
 
 ## License
 
-MIT
+MIT License. See LICENSE file for details.
