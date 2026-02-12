@@ -20,10 +20,14 @@ const policy = {
     allowedColumnName: 'allowed',
     requiredColumnName: 'required'
 };
+let eventContext: Xrm.Events.EventContext;
+let formContext: Xrm.FormContext;
 
 describe('PolicyEngine', () => {
     beforeEach(() => {
         XrmMockGenerator.initialise();
+        eventContext = XrmMockGenerator.getEventContext();
+        formContext = eventContext.getFormContext();
         const nameAttribute = XrmMockGenerator.Attribute.createString(
             'name',
             'Test Name'
@@ -171,8 +175,6 @@ describe('PolicyEngine', () => {
     ])(
         'String Comparison: applies policy correctly when a matching policy definition is found: $name',
         async ({ mockResponse, expected }) => {
-            const eventContext = XrmMockGenerator.getEventContext();
-            const formContext = eventContext.getFormContext();
             const statusAttribute = XrmMockGenerator.Attribute.createString(
                 'status',
                 'allow'
@@ -277,8 +279,6 @@ describe('PolicyEngine', () => {
     ])(
         'Choice Comparison: applies policy correctly when a matching policy definition is found: $name',
         async ({ mockResponse, expected }) => {
-            const eventContext = XrmMockGenerator.getEventContext();
-            const formContext = eventContext.getFormContext();
             const statusAttribute = XrmMockGenerator.Attribute.createOptionSet(
                 'status',
                 0
@@ -390,9 +390,6 @@ describe('PolicyEngine', () => {
     ])(
         'Lookup Comparison: applies policy correctly when a matching policy definition is found: $name',
         async ({ mockResponse, expected }) => {
-            const eventContext = XrmMockGenerator.getEventContext();
-            const formContext = eventContext.getFormContext();
-
             const statusAttribute = XrmMockGenerator.Attribute.createLookup(
                 'status',
                 lookupValue
