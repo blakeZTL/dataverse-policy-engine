@@ -79,9 +79,9 @@ export async function PolicyEngine(
         const pd: PolicyDefinition = {
             attribute: entity[policy.attributeColumnName],
             value: entity[policy.valueColumnName],
-            visible: !!entity[policy.visibilityColumnName],
-            allowed: !!entity[policy.allowedColumnName],
-            required: !!entity[policy.requiredColumnName]
+            visible: entity[policy.visibilityColumnName],
+            allowed: entity[policy.allowedColumnName],
+            required: entity[policy.requiredColumnName]
         };
         return pd;
     });
@@ -110,7 +110,7 @@ export async function PolicyEngine(
             continue;
         }
         console.debug(
-            `${debugPrefix}: Applying policy to attribute "${pd.attribute}": Visible=${pd.visible}, Lock=${pd.allowed}, Require=${pd.required}`
+            `${debugPrefix}: Applying policy to attribute "${pd.attribute}": Visible=${pd.visible}, Allowed=${pd.allowed}, Require=${pd.required}`
         );
         control.setVisible(pd.visible);
 
