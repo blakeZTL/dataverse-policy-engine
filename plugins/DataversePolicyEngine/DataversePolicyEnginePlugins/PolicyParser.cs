@@ -24,14 +24,14 @@ namespace DataversePolicyEnginePlugins
         [DataMember(Name = "valueColumnType")]
         public string ValueColumnType { get; set; }
 
-        [DataMember(Name = "shouldHideColumnName")]
-        public string ShouldHideColumnName { get; set; }
+        [DataMember(Name = "visibleColumnName")]
+        public string VisibleColumnName { get; set; }
 
-        [DataMember(Name = "shouldLockColumnName")]
-        public string ShouldLockColumnName { get; set; }
+        [DataMember(Name = "allowedColumnName")]
+        public string AllowedColumnName { get; set; }
 
-        [DataMember(Name = "shouldRequireColumnName")]
-        public string ShouldRequireColumnName { get; set; }
+        [DataMember(Name = "requiredColumnName")]
+        public string RequiredColumnName { get; set; }
     }
 
     [DataContract]
@@ -103,8 +103,6 @@ namespace DataversePolicyEnginePlugins
             {
                 throw new ArgumentException("ValueColumnType in SuppliedPolicy is required.");
             }
-
-            // Add more validations if needed, e.g., check if ValueColumnType is a valid type
 
             return input;
         }

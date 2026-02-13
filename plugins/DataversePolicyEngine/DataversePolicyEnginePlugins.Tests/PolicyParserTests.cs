@@ -18,9 +18,9 @@ namespace DataversePolicyEnginePlugins.Tests
                     ""attributeColumnName"": ""dpe_attribute"",
                     ""valueColumnName"": ""dpe_lookupcomparison"",
                     ""valueColumnType"": ""EntityReference"",
-                    ""shouldHideColumnName"": ""dpe_shouldhide"",
-                    ""shouldLockColumnName"": ""dpe_shouldlock"",
-                    ""shouldRequireColumnName"": ""dpe_shouldrequire""
+                    ""visiblaeColumnName"": ""dpe_visible"",
+                    ""allowedColumnName"": ""dpe_allowed"",
+                    ""requiredColumnName"": ""dpe_required""
                 }
             }";
 
@@ -34,9 +34,9 @@ namespace DataversePolicyEnginePlugins.Tests
             Assert.AreEqual("dpe_attribute", result.SuppliedPolicy.AttributeColumnName);
             Assert.AreEqual("dpe_lookupcomparison", result.SuppliedPolicy.ValueColumnName);
             Assert.AreEqual("EntityReference", result.SuppliedPolicy.ValueColumnType);
-            Assert.AreEqual("dpe_shouldhide", result.SuppliedPolicy.ShouldHideColumnName);
-            Assert.AreEqual("dpe_shouldlock", result.SuppliedPolicy.ShouldLockColumnName);
-            Assert.AreEqual("dpe_shouldrequire", result.SuppliedPolicy.ShouldRequireColumnName);
+            Assert.AreEqual("dpe_visible", result.SuppliedPolicy.VisibleColumnName);
+            Assert.AreEqual("dpe_allowed", result.SuppliedPolicy.AllowedColumnName);
+            Assert.AreEqual("dpe_required", result.SuppliedPolicy.RequiredColumnName);
         }
 
         [TestMethod]
@@ -79,9 +79,9 @@ namespace DataversePolicyEnginePlugins.Tests
                     ""attributeColumnName"": ""dpe_attribute"",
                     ""valueColumnName"": ""dpe_lookupcomparison"",
                     ""valueColumnType"": ""EntityReference"",
-                    ""shouldHideColumnName"": ""dpe_shouldhide"",
-                    ""shouldLockColumnName"": ""dpe_shouldlock"",
-                    ""shouldRequireColumnName"": ""dpe_shouldrequire""
+                    ""visibleColumnName"": ""dpe_visible"",
+                    ""allowedColumnName"": ""dpe_allowed"",
+                    ""requiredColumnName"": ""dpe_required""
                 }
             }";
             PolicyParser.ParseAndValidate(json);
@@ -100,9 +100,9 @@ namespace DataversePolicyEnginePlugins.Tests
                     ""attributeColumnName"": ""dpe_attribute"",
                     ""valueColumnName"": ""dpe_lookupcomparison"",
                     ""valueColumnType"": ""EntityReference"",
-                    ""shouldHideColumnName"": ""dpe_shouldhide"",
-                    ""shouldLockColumnName"": ""dpe_shouldlock"",
-                    ""shouldRequireColumnName"": ""dpe_shouldrequire""
+                    ""visibleColumnName"": ""dpe_visible"",
+                    ""allowedColumnName"": ""dpe_allowed"",
+                    ""requiredColumnName"": ""dpe_required""
                 }
             }";
             PolicyParser.ParseAndValidate(json);
@@ -132,9 +132,9 @@ namespace DataversePolicyEnginePlugins.Tests
                     ""attributeColumnName"": ""dpe_attribute"",
                     ""valueColumnName"": ""dpe_lookupcomparison"",
                     ""valueColumnType"": ""EntityReference"",
-                    ""shouldHideColumnName"": ""dpe_shouldhide"",
-                    ""shouldLockColumnName"": ""dpe_shouldlock"",
-                    ""shouldRequireColumnName"": ""dpe_shouldrequire""
+                    ""visibleColumnName"": ""dpe_visible"",
+                    ""allowedColumnName"": ""dpe_allowed"",
+                    ""requiredColumnName"": ""dpe_required""
                 }
             }";
             PolicyParser.ParseAndValidate(json);
@@ -153,9 +153,9 @@ namespace DataversePolicyEnginePlugins.Tests
                     ""attributeColumnName"": ""dpe_attribute"",
                     ""valueColumnName"": ""dpe_lookupcomparison"",
                     ""valueColumnType"": ""EntityReference"",
-                    ""shouldHideColumnName"": ""dpe_shouldhide"",
-                    ""shouldLockColumnName"": ""dpe_shouldlock"",
-                    ""shouldRequireColumnName"": ""dpe_shouldrequire""
+                    ""visibleColumnName"": ""dpe_visible"",
+                    ""allowedColumnName"": ""dpe_allowed"",
+                    ""requiredColumnName"": ""dpe_required""
                 }
             }";
             PolicyParser.ParseAndValidate(json);
@@ -173,9 +173,9 @@ namespace DataversePolicyEnginePlugins.Tests
                     ""entityColumnName"": ""dpe_entity"",
                     ""valueColumnName"": ""dpe_lookupcomparison"",
                     ""valueColumnType"": ""EntityReference"",
-                    ""shouldHideColumnName"": ""dpe_shouldhide"",
-                    ""shouldLockColumnName"": ""dpe_shouldlock"",
-                    ""shouldRequireColumnName"": ""dpe_shouldrequire""
+                    ""visibleColumnName"": ""dpe_visible"",
+                    ""allowedColumnName"": ""dpe_allowed"",
+                    ""requiredColumnName"": ""dpe_required""
                 }
             }";
             PolicyParser.ParseAndValidate(json);
@@ -193,9 +193,9 @@ namespace DataversePolicyEnginePlugins.Tests
                     ""entityColumnName"": ""dpe_entity"",
                     ""attributeColumnName"": ""dpe_attribute"",
                     ""valueColumnType"": ""EntityReference"",
-                    ""shouldHideColumnName"": ""dpe_shouldhide"",
-                    ""shouldLockColumnName"": ""dpe_shouldlock"",
-                    ""shouldRequireColumnName"": ""dpe_shouldrequire""
+                    ""visibleColumnName"": ""dpe_visible"",
+                    ""allowedColumnName"": ""dpe_allowed"",
+                    ""requiredColumnName"": ""dpe_required""
                 }
             }";
             PolicyParser.ParseAndValidate(json);
@@ -213,9 +213,9 @@ namespace DataversePolicyEnginePlugins.Tests
                     ""entityColumnName"": ""dpe_entity"",
                     ""attributeColumnName"": ""dpe_attribute"",
                     ""valueColumnName"": ""dpe_lookupcomparison"",
-                    ""shouldHideColumnName"": ""dpe_shouldhide"",
-                    ""shouldLockColumnName"": ""dpe_shouldlock"",
-                    ""shouldRequireColumnName"": ""dpe_shouldrequire""
+                    ""visibleColumnName"": ""dpe_visible"",
+                    ""allowedColumnName"": ""dpe_allowed"",
+                    ""requiredColumnName"": ""dpe_required""
                 }
             }";
             PolicyParser.ParseAndValidate(json);
