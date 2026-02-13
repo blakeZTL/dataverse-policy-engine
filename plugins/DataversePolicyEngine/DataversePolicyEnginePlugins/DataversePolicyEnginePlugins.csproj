@@ -12,6 +12,7 @@
     <RootNamespace>DataversePolicyEnginePlugins</RootNamespace>
     <AssemblyName>DataversePolicyEnginePlugins</AssemblyName>
     <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+    <RuntimeIdentifiers>win</RuntimeIdentifiers>
     <FileAlignment>512</FileAlignment>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <!--<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>-->
