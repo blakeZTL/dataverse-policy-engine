@@ -17,7 +17,7 @@ describe('GeneratePolicyDefinitionFetchXML', () => {
             attributeColumnName: 'name',
             valueColumnName: 'status',
             valueColumnType: ValueColumnType.String,
-            visibilityColumnName: 'shouldhide',
+            visibleColumnName: 'shouldhide',
             allowedColumnName: 'shouldlock',
             requiredColumnName: 'shouldrequire'
         });
@@ -34,7 +34,7 @@ describe('GeneratePolicyDefinitionFetchXML', () => {
             attributeColumnName: 'name',
             valueColumnName: 'status',
             valueColumnType: ValueColumnType.String,
-            visibilityColumnName: 'shouldhide',
+            visibleColumnName: 'shouldhide',
             allowedColumnName: 'shouldlock',
             requiredColumnName: 'shouldrequire'
         });
@@ -50,7 +50,7 @@ describe('GeneratePolicyDefinitionFetchXML', () => {
             attributeColumnName: 'name',
             valueColumnName: 'status',
             valueColumnType: ValueColumnType.String,
-            visibilityColumnName: 'shouldhide',
+            visibleColumnName: 'shouldhide',
             allowedColumnName: 'shouldlock',
             requiredColumnName: 'shouldrequire'
         });
@@ -69,7 +69,7 @@ describe('GeneratePolicyDefinitionFetchXML', () => {
             attributeColumnName: 'name',
             valueColumnName: 'statuscode',
             valueColumnType: ValueColumnType.Int,
-            visibilityColumnName: 'shouldhide',
+            visibleColumnName: 'shouldhide',
             allowedColumnName: 'shouldlock',
             requiredColumnName: 'shouldrequire'
         });
@@ -85,7 +85,7 @@ describe('GeneratePolicyDefinitionFetchXML', () => {
             attributeColumnName: 'name',
             valueColumnName: 'isactive',
             valueColumnType: ValueColumnType.Boolean,
-            visibilityColumnName: 'shouldhide',
+            visibleColumnName: 'shouldhide',
             allowedColumnName: 'shouldlock',
             requiredColumnName: 'shouldrequire'
         });
@@ -101,7 +101,7 @@ describe('GeneratePolicyDefinitionFetchXML', () => {
             attributeColumnName: 'name',
             valueColumnName: 'createdon',
             valueColumnType: ValueColumnType.DateTime,
-            visibilityColumnName: 'shouldhide',
+            visibleColumnName: 'shouldhide',
             allowedColumnName: 'shouldlock',
             requiredColumnName: 'shouldrequire'
         });
@@ -118,7 +118,7 @@ describe('GeneratePolicyDefinitionFetchXML', () => {
             attributeColumnName: 'name',
             valueColumnName: 'revenue',
             valueColumnType: ValueColumnType.Decimal,
-            visibilityColumnName: 'shouldhide',
+            visibleColumnName: 'shouldhide',
             allowedColumnName: 'shouldlock',
             requiredColumnName: 'shouldrequire'
         });
@@ -134,7 +134,7 @@ describe('GeneratePolicyDefinitionFetchXML', () => {
             attributeColumnName: 'name',
             valueColumnName: 'statuscode',
             valueColumnType: ValueColumnType.OptionSetValue,
-            visibilityColumnName: 'shouldhide',
+            visibleColumnName: 'shouldhide',
             allowedColumnName: 'shouldlock',
             requiredColumnName: 'shouldrequire'
         });
@@ -151,7 +151,7 @@ describe('GeneratePolicyDefinitionFetchXML', () => {
             attributeColumnName: 'dpe_attribute',
             valueColumnName: 'dpe_lookupcomparison',
             valueColumnType: ValueColumnType.EntityReference,
-            visibilityColumnName: 'dpe_shouldhide',
+            visibleColumnName: 'dpe_shouldhide',
             allowedColumnName: 'dpe_shouldlock',
             requiredColumnName: 'dpe_shouldrequire'
         });
@@ -171,7 +171,7 @@ describe('GeneratePolicyDefinitionFetchXML', () => {
             entityColumnName: 'accountid',
             attributeColumnName: 'name',
             valueColumnName: 'status',
-            visibilityColumnName: 'shouldhide',
+            visibleColumnName: 'shouldhide',
             allowedColumnName: 'shouldlock',
             requiredColumnName: 'shouldrequire',
             // bypass TS to simulate bad runtime value

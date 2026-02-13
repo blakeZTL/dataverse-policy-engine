@@ -29,7 +29,7 @@ export function GeneratePolicyDefinitionFetchXML(
                             <attribute name="${policy.entityColumnName}" />
                             <attribute name="${policy.attributeColumnName}" />
                             <attribute name="${policy.valueColumnName}" />
-                            <attribute name="${policy.visibilityColumnName}" />
+                            <attribute name="${policy.visibleColumnName}" />
                             <attribute name="${policy.allowedColumnName}" />
                             <attribute name="${policy.requiredColumnName}" />
                             <filter>
@@ -56,7 +56,7 @@ export function GeneratePolicyDefinitionFetchXML(
             fetchXML += `<condition attribute="${policy.valueColumnName}" operator="eq" value="${value}" />`;
             break;
         case 'OptionSetValue':
-            fetchXML += `<condition attribute="${policy.valueColumnName}" operator="eq" value="${(value as Xrm.OptionSetValue).value}" />`;
+            fetchXML += `<condition attribute="${policy.valueColumnName}" operator="eq" value="${(value as Xrm.OptionSetValue).value ?? value}" />`;
             break;
         case 'EntityReference':
             fetchXML += `<condition attribute="${policy.valueColumnName}" operator="eq" value="${(value as Xrm.LookupValue).id}" />`;
