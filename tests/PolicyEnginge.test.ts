@@ -16,7 +16,7 @@ const policy = {
     attributeColumnName: 'attribute',
     valueColumnName: 'status',
     valueColumnType: 'String',
-    visibilityColumnName: 'visible',
+    visibleColumnName: 'visible',
     allowedColumnName: 'allowed',
     requiredColumnName: 'required'
 };

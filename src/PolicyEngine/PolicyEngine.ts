@@ -24,16 +24,67 @@ export async function PolicyEngine(
 
     const formContext = eventContext.getFormContext();
     const entityName = formContext.data.entity.getEntityName();
-    debugPrefix += ` [${entityName}-${policyConfig.attributeName}]`;
-    console.debug(`${debugPrefix}: Evaluating policy for entity "${entityName}"`);
-
     const valueColumn = formContext.getAttribute(policyConfig.attributeName);
     if (!valueColumn) {
         throw new Error(
             `${debugPrefix}: Attribute "${policyConfig.attributeName}" not found on the form`
         );
     }
-    if (valueColumn.getValue() === null) {
+    debugPrefix += ` [${entityName}-${policyConfig.attributeName}]`;
+    console.debug(`${debugPrefix}: Evaluating policy for entity "${entityName}"`);
+
+    await applyPolicy(
+        formContext,
+        policy,
+        policyConfig,
+        valueColumn,
+        entityName,
+        debugPrefix + '(onLoad)'
+    ).catch((error) => {
+        console.error(`${debugPrefix}: Error applying policy`, error);
+    });
+    formContext.data.entity.addOnSave(async () => {
+        console.debug(`${debugPrefix}: Form is saving, re-evaluating policy`);
+        await applyPolicy(
+            formContext,
+            policy,
+            policyConfig,
+            valueColumn,
+            entityName,
+            debugPrefix + '(onSave)'
+        ).catch((error) => {
+            console.error(`${debugPrefix}: Error applying policy on save`, error);
+        });
+    });
+    valueColumn.addOnChange(async () => {
+        console.debug(
+            `${debugPrefix}: Attribute "${policyConfig.attributeName}" value changed, re-evaluating policy`
+        );
+        await applyPolicy(
+            formContext,
+            policy,
+            policyConfig,
+            valueColumn,
+            entityName,
+            debugPrefix + '(onChange)'
+        ).catch((error) => {
+            console.error(
+                `${debugPrefix}: Error applying policy on attribute change`,
+                error
+            );
+        });
+    });
+}
+
+async function applyPolicy(
+    formContext: Xrm.FormContext,
+    policy: Policy,
+    policyConfig: PolicyEngineConfig,
+    valueAttr: Xrm.Attributes.Attribute,
+    entityName: string,
+    debugPrefix: string
+): Promise<void> {
+    if (valueAttr.getValue() === null) {
         console.debug(
             `${debugPrefix}: Attribute "${policyConfig.attributeName}" has a null value, skipping policy evaluation`
         );
@@ -41,11 +92,11 @@ export async function PolicyEngine(
     }
     console.debug(
         `${debugPrefix}: Retrieved value from attribute "${policyConfig.attributeName}" for policy evaluation`,
-        valueColumn.getValue()
+        valueAttr.getValue()
     );
 
     const value = ValueParser(
-        valueColumn.getValue() as
+        valueAttr.getValue() as
             | string
             | number
             | boolean
@@ -78,7 +129,7 @@ export async function PolicyEngine(
         const pd: PolicyDefinition = {
             attribute: entity[policy.attributeColumnName],
             value: entity[policy.valueColumnName],
-            visible: entity[policy.visibilityColumnName],
+            visible: entity[policy.visibleColumnName],
             allowed: entity[policy.allowedColumnName],
             required: entity[policy.requiredColumnName]
         };
