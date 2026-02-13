@@ -40,8 +40,11 @@ jobs:
       - name: Restore .NET dependencies
         run: dotnet restore plugins/DataversePolicyEngine/DataversePolicyEnginePlugins/DataversePolicyEnginePlugins.csproj
 
-      - name: Build .NET Plugin
-        run: dotnet build plugins/DataversePolicyEngine/DataversePolicyEnginePlugins/DataversePolicyEnginePlugins.csproj --configuration Release
+      - name: Build .NET Plugin with MSBuild
+        run: |
+          $msbuildPath = & "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Current\Bin\MSBuild.exe" 2>$null
+          if (!$msbuildPath) { $msbuildPath = "MSBuild.exe" }
+          & $msbuildPath plugins/DataversePolicyEngine/DataversePolicyEnginePlugins/DataversePolicyEnginePlugins.csproj /p:Configuration=Release
 
       - name: Find and copy .dll
         run: |
