@@ -49,52 +49,76 @@ namespace DataversePolicyEnginePlugins
             if (policyRows.Count == 0)
                 return;
 
+            trace.Trace($"Policy count: {policyRows.Count}");
             // 2) Evaluate each policy row and enforce
             var metaCache = new Dictionary<string, AttributeMetadata>(
                 StringComparer.OrdinalIgnoreCase
             );
+            var entityValue = EntityValueResolver.GetEffectiveValue(
+                target,
+                preImage,
+                _policy.AttributeName
+            );
+            trace.Trace($"Entity comparison value: {entityValue}");
 
-            foreach (var policyRow in policyRows)
+            var entityValueMeta = MetadataCache.GetAttributeMetadata(
+                svc,
+                metaCache,
+                entityName,
+                _policy.AttributeName
+            );
+
+            var applicablePolicies = policyRows.Where(
+                (p) =>
+                {
+                    var policyValue = EntityValueResolver.GetEffectiveValue(
+                        p,
+                        p,
+                        _policy.SuppliedPolicy.ValueColumnName
+                    );
+
+                    return DataverseValueComparer.ValuesEqualByMetadata(
+                        entityValueMeta,
+                        entityValue,
+                        policyValue
+                    );
+                }
+            );
+
+            foreach (var policyRow in applicablePolicies)
             {
                 var attrName = policyRow.GetAttributeValue<string>(
                     _policy.SuppliedPolicy.AttributeColumnName
                 );
+                trace.Trace($"Validating policy for {attrName}");
+
                 if (string.IsNullOrWhiteSpace(attrName))
                     continue;
 
-                // effective value = target if present, else preImage
                 var effectiveValue = EntityValueResolver.GetEffectiveValue(
                     target,
                     preImage,
                     attrName
                 );
+                trace.Trace(
+                    $"Effective value: {effectiveValue}, type: {effectiveValue?.GetType()}"
+                );
 
-                // expected value comes from configured typed column on the policy row
-                var expectedValue = policyRow.Contains(_policy.SuppliedPolicy.ValueColumnName)
-                    ? policyRow[_policy.SuppliedPolicy.ValueColumnName]
-                    : null;
-
-                // only enforce when the policy row "applies" (value match)
-                var meta = MetadataCache.GetAttributeMetadata(svc, metaCache, entityName, attrName);
-
-                if (
-                    !DataverseValueComparer.ValuesMatchConfigured(
-                        meta,
-                        effectiveValue,
-                        expectedValue,
-                        _policy.SuppliedPolicy.ValueColumnType
-                    )
-                )
-                {
-                    continue;
-                }
+                var attrMeta = MetadataCache.GetAttributeMetadata(
+                    svc,
+                    metaCache,
+                    entityName,
+                    attrName
+                );
 
                 var required =
                     policyRow.GetAttributeValue<bool?>(_policy.SuppliedPolicy.RequiredColumnName)
                     ?? false;
+                trace.Trace($"Required: {required}");
                 var allowed =
                     policyRow.GetAttributeValue<bool?>(_policy.SuppliedPolicy.AllowedColumnName)
                     ?? true;
+                trace.Trace($"Allowed: {allowed}");
 
                 // REQUIRED: effective value cannot be null
                 if (required && IsNullValue(effectiveValue))
@@ -107,6 +131,7 @@ namespace DataversePolicyEnginePlugins
                 // NOT ALLOWED: cannot set/change
                 if (!allowed)
                 {
+                    trace.Trace($"{attrName} not allowed");
                     if (isCreate)
                     {
                         // If user attempted to set it on create, block (null is okay)
@@ -123,14 +148,16 @@ namespace DataversePolicyEnginePlugins
                         if (target.Attributes.Contains(attrName))
                         {
                             var newValue = target[attrName];
+                            trace.Trace($"New value: {newValue}");
                             var oldValue =
                                 preImage != null && preImage.Attributes.Contains(attrName)
                                     ? preImage[attrName]
                                     : null;
+                            trace.Trace($"Old value: {oldValue}");
 
                             if (
                                 !DataverseValueComparer.ValuesEqualByMetadata(
-                                    meta,
+                                    attrMeta,
                                     newValue,
                                     oldValue
                                 )
