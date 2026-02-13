@@ -45,6 +45,12 @@
 			Placeholder
 		</Description>
   </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>Blake.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -66,12 +72,15 @@
     <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataverseValueComparer.cs" />
     <Compile Include="HandleEntityValidation.cs" />
     <Compile Include="PolicyParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PluginBase.cs" />
     <Compile Include="ValueColumnType.cs" />
-    <Compile Include="ValueParser.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Blake.snk" />
   </ItemGroup>
   <Target Name="GetTfmPublishedFiles">
     <Message Text="GetTfmPublishedFiles from: $(OutputPath)" />
