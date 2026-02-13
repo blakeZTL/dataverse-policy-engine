@@ -1,0 +1,83 @@
+name: Build and Package
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: windows-latest  # Windows for .NET Framework 4.8 builds
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Fetch full history for tagging
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'  # Adjust to match your project's Node version
+
+      - name: Install pnpm
+        run: npm install -g pnpm
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build TypeScript
+        run: pnpm run build
+
+      - name: Rename bundle.js to DataversePolicyEngine.js
+        run: mv dist/bundle.js dist/DataversePolicyEngine.js
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'  # .NET 8 SDK; dotnet build will handle .NET Framework 4.8 targeting
+          
+      - name: Restore .NET dependencies
+        run: dotnet restore plugins/DataversePolicyEngine/DataversePolicyEnginePlugins/DataversePolicyEnginePlugins.csproj
+
+      - name: Build .NET Plugin
+        run: dotnet build plugins/DataversePolicyEngine/DataversePolicyEnginePlugins/DataversePolicyEnginePlugins.csproj --configuration Release
+
+      - name: Find and copy .dll
+        run: |
+          $dllPath = Get-ChildItem -Path plugins/DataversePolicyEngine/DataversePolicyEnginePlugins/bin/Release -Filter *.dll -Recurse | Select-Object -First 1
+          Copy-Item $dllPath.FullName dist/DataversePolicyEnginePlugins.dll
+
+      - name: Create zip archive
+        run: |
+          cd dist
+          Compress-Archive -Path DataversePolicyEngine.js, DataversePolicyEnginePlugins.dll -DestinationPath ../DataversePolicyEngine-release.zip
+
+      - name: Generate version tag
+        id: version
+        run: |
+          $date = Get-Date -Format "yyyy-MM-dd"
+          $tag = "v$date"
+          echo "tag=$tag" >> $env:GITHUB_OUTPUT
+
+      - name: Create and push tag
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git tag ${{ steps.version.outputs.tag }}
+          git push origin ${{ steps.version.outputs.tag }}
+
+      - name: Create GitHub release and upload zip
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.version.outputs.tag }}
+          name: Release ${{ steps.version.outputs.tag }}
+          body: |
+            Automated release for commit ${{ github.sha }}.
+            
+            Includes:
+            - DataversePolicyEngine.js (TypeScript build)
+            - DataversePolicyEnginePlugins.dll (.NET Framework 4.8 build)
+          files: ./DataversePolicyEngine-release.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
