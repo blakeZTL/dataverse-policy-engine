@@ -6,8 +6,8 @@
         "attributeColumnName": "dpe_attribute",
         "valueColumnName": "dpe_choicecomparison",
         "valueColumnType": "OptionSetValue",
-        "shouldHideColumnName": "dpe_shouldhide",
-        "shouldLockColumnName": "dpe_shouldlock",
-        "shouldRequireColumnName": "dpe_shouldrequire"
+        "visibleColumnName": "dpe_visible",
+        "allowedColumnName": "dpe_allowed",
+        "requiredColumnName": "dpe_required"
     }
 }
