@@ -10,7 +10,7 @@ describe('Policy', () => {
             attributeColumnName: 'name',
             valueColumnName: 'status',
             valueColumnType: ValueColumnType.String,
-            visibilityColumnName: 'hide',
+            visibleColumnName: 'hide',
             allowedColumnName: 'lock',
             requiredColumnName: 'require'
         } as const;
@@ -22,7 +22,7 @@ describe('Policy', () => {
         expect(pd.attributeColumnName).toBe('name');
         expect(pd.valueColumnName).toBe('status');
         expect(pd.valueColumnType).toBe(ValueColumnType.String);
-        expect(pd.visibilityColumnName).toBe('hide');
+        expect(pd.visibleColumnName).toBe('hide');
         expect(pd.allowedColumnName).toBe('lock');
         expect(pd.requiredColumnName).toBe('require');
         expect(pd.toJSON()).toEqual(json);

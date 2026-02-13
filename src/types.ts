@@ -27,7 +27,7 @@ export class Policy {
     readonly attributeColumnName: string;
     readonly valueColumnName: string;
     readonly valueColumnType: ValueColumnType;
-    readonly visibilityColumnName: string;
+    readonly visibleColumnName: string;
     readonly allowedColumnName: string;
     readonly requiredColumnName: string;
 
@@ -37,7 +37,7 @@ export class Policy {
         attributeColumnName: string;
         valueColumnName: string;
         valueColumnType: ValueColumnType;
-        visibilityColumnName?: string;
+        visibleColumnName?: string;
         allowedColumnName?: string;
         requiredColumnName?: string;
     }) {
@@ -46,7 +46,7 @@ export class Policy {
         this.attributeColumnName = params.attributeColumnName;
         this.valueColumnName = params.valueColumnName;
         this.valueColumnType = params.valueColumnType;
-        this.visibilityColumnName = params.visibilityColumnName ?? '';
+        this.visibleColumnName = params.visibleColumnName ?? '';
         this.allowedColumnName = params.allowedColumnName ?? '';
         this.requiredColumnName = params.requiredColumnName ?? '';
     }
@@ -97,16 +97,13 @@ export class Policy {
             );
         }
 
-        const visibilityColumnName = obj.visibilityColumnName;
+        const visibleColumnName = obj.visibleColumnName;
         const allowedColumnName = obj.allowedColumnName;
         const requiredColumnName = obj.requiredColumnName;
 
-        if (
-            visibilityColumnName !== undefined &&
-            typeof visibilityColumnName !== 'string'
-        ) {
+        if (visibleColumnName !== undefined && typeof visibleColumnName !== 'string') {
             throw new TypeError(
-                'Policy.fromJSON: "visibilityColumnName" must be a string'
+                'Policy.fromJSON: "visibleColumnName" must be a string'
             );
         }
         if (allowedColumnName !== undefined && typeof allowedColumnName !== 'string') {
@@ -129,7 +126,7 @@ export class Policy {
             attributeColumnName: attributeColumnName as string,
             valueColumnName: valueColumnName as string,
             valueColumnType: valueColumnType as ValueColumnType,
-            visibilityColumnName: (visibilityColumnName as string) || '',
+            visibleColumnName: (visibleColumnName as string) || '',
             allowedColumnName: (allowedColumnName as string) || '',
             requiredColumnName: (requiredColumnName as string) || ''
         });
@@ -141,7 +138,7 @@ export class Policy {
         attributeColumnName: string;
         valueColumnName: string;
         valueColumnType: ValueColumnType;
-        visibilityColumnName: string;
+        visibleColumnName: string;
         allowedColumnName: string;
         requiredColumnName: string;
     } {
@@ -151,7 +148,7 @@ export class Policy {
             attributeColumnName: this.attributeColumnName,
             valueColumnName: this.valueColumnName,
             valueColumnType: this.valueColumnType,
-            visibilityColumnName: this.visibilityColumnName,
+            visibleColumnName: this.visibleColumnName,
             allowedColumnName: this.allowedColumnName,
             requiredColumnName: this.requiredColumnName
         };
