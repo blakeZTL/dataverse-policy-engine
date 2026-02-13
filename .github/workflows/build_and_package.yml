@@ -38,11 +38,11 @@ jobs:
           dotnet-version: '8.0.x'  # .NET 8 SDK; dotnet build will handle .NET Framework 4.8 targeting
 
       - name: Build .NET Plugin
-        run: dotnet build plugins/DataversePolicyEnginePlugins/DataversePolicyEnginePlugins.csproj --configuration Release
+        run: dotnet build plugins/DataversePolicyEngine/DataversePolicyEnginePlugins/DataversePolicyEnginePlugins.csproj --configuration Release
 
       - name: Find and copy .dll
         run: |
-          $dllPath = Get-ChildItem -Path plugins/DataversePolicyEnginePlugins/bin/Release -Filter *.dll -Recurse | Select-Object -First 1
+          $dllPath = Get-ChildItem -Path plugins/DataversePolicyEngine/DataversePolicyEnginePlugins/bin/Release -Filter *.dll -Recurse | Select-Object -First 1
           Copy-Item $dllPath.FullName dist/DataversePolicyEnginePlugins.dll
 
       - name: Create zip archive
