@@ -36,6 +36,9 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.0.x'  # .NET 8 SDK; dotnet build will handle .NET Framework 4.8 targeting
+          
+      - name: Restore .NET dependencies
+        run: dotnet restore plugins/DataversePolicyEngine/DataversePolicyEnginePlugins/DataversePolicyEnginePlugins.csproj
 
       - name: Build .NET Plugin
         run: dotnet build plugins/DataversePolicyEngine/DataversePolicyEnginePlugins/DataversePolicyEnginePlugins.csproj --configuration Release
